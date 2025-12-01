@@ -1,0 +1,100 @@
+<div
+  class="
+    max-w-2xl mx-auto mt-10 p-6 bg-white shadow-xl rounded-lg border
+    border-gray-200
+  "
+>
+  <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
+    Loan Repayment Calculation
+  </h1>
+
+  <%= form_with url: root_path, method: :get, local: true, class: "space-y-4" do |f| %>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :amount, "Loan Amount (£)", class: "block text-sm font-medium text-gray-700" %>
+
+        <div class="relative mt-1 rounded-md shadow-sm">
+          <div
+            class="
+              pointer-events-none absolute inset-y-0 left-0 flex
+              items-center pl-3
+            "
+          >
+            <span class="text-gray-500 sm:text-sm">£</span>
+          </div>
+
+          <%= f.number_field :amount, value: params[:amount], class: "block w-full rounded-md border-gray-300 pl-7 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+        </div>
+      </div>
+
+      <div>
+        <%= f.label :rate, "Interest Rate (%)", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.number_field :rate, value: params[:rate], step: 0.01, class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <%= f.label :years, "Term (Years)", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.number_field :years, value: params[:years], class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" %>
+      </div>
+
+      <div>
+        <%= f.label :monthly_overpayment, "Overpayment (£/mo)", class: "block text-sm font-medium text-emerald-600" %>
+
+        <div class="relative mt-1 rounded-md shadow-sm">
+          <div
+            class="
+              pointer-events-none absolute inset-y-0 left-0 flex
+              items-center pl-3
+            "
+          >
+            <span class="text-emerald-500 sm:text-sm">£</span>
+          </div>
+
+          <%= f.number_field :monthly_overpayment, value: params[:monthly_overpayment], class: "block w-full rounded-md border-emerald-300 pl-7 focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm" %>
+        </div>
+      </div>
+    </div>
+
+    <%= f.submit "Calculate Savings", class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer" %>
+  <% end %>
+
+  <% if @results %>
+    <div class="mt-8 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+      <h2 class="text-xl font-bold text-emerald-800 mb-4 text-center">
+        The Power of Overpayment
+      </h2>
+
+      <div class="grid grid-cols-2 gap-6 text-center">
+        <div>
+          <p class="text-xs uppercase text-gray-500">Standard Interest</p>
+
+          <p class="text-xl text-gray-700">
+            <%= number_to_currency(@results[:normal_total_interest], unit: "£") %>
+          </p>
+        </div>
+
+        <div>
+          <p class="text-xs uppercase text-emerald-600 font-bold">
+            With Overpayment
+          </p>
+
+          <p class="text-xl text-emerald-700 font-bold">
+            <%= number_to_currency(@results[:faster_total_interest], unit: "£") %>
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-4 pt-4 border-t border-emerald-200 text-center">
+        <p class="text-lg text-gray-700">
+          You will save
+          <span class="font-bold text-emerald-600"><%= number_to_currency(@results[:money_saved], unit: "£") %></span>
+          and be debt-free
+          <span class="font-bold text-emerald-600"><%= @results[:months_saved] %> months</span>
+          earlier!
+        </p>
+      </div>
+    </div>
+  <% end %>
+</div>
